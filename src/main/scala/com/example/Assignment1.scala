@@ -1,5 +1,6 @@
 package com.example
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.spark.sql.{Encoders, SaveMode, SparkSession}
 
 object Assignment1 {
@@ -21,19 +22,24 @@ object Assignment1 {
                         timestamp: Long)
 
   def main(args: Array[String]): Unit = {
-    val spark = SparkSession.builder.appName("RunSpark Application").getOrCreate()
-    val inputPath = args(0)
-    val outputPath = args(1)
+    val spark = SparkSession.builder
+      .appName("RunSpark Application")
+      .getOrCreate()
+
+    val config : Config = ConfigFactory.parseResources("application.conf")
+
+    val inputPath = config.getString("config.inputPath")
+    val outputPath = config.getString("config.outputPath")
 
     val parametersSchema = Encoders.product[Parameters].schema
-    var df = spark.read.schema(parametersSchema).option("header", true).csv(inputPath)
+    val df = spark.read.schema(parametersSchema).option("header", true).csv(inputPath)
     df.persist
 
     df.createOrReplaceTempView("df")
 
-    var sortedDf = spark.sql("SELECT * FROM df ORDER BY shortCountryCode, timestamp")
+    val sortedDf = spark.sql("SELECT * FROM df ORDER BY shortCountryCode, timestamp")
 
-    sortedDf.write.format("csv").mode(SaveMode.Overwrite).save(outputPath)
+    sortedDf.repartition(1).write.format("csv").mode(SaveMode.Overwrite).save(outputPath)
 
   }
 

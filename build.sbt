@@ -8,6 +8,8 @@ assembly / assemblyJarName := "Assignment1.jar"
 val sparkVersion = "3.1.2"
 
 libraryDependencies += "org.apache.spark" %% "spark-sql" % sparkVersion
+libraryDependencies += "com.typesafe" % "config" % "1.4.1"
+//libraryDependencies += "org.apache.logging.log4j" %% "log4j-core" % sparkVersion
 
 assembly / assemblyMergeStrategy := {
   case PathList("META-INF", xs @ _*) => MergeStrategy.discard
