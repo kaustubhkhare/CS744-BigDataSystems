@@ -3,7 +3,7 @@ version := "1.0"
 scalaVersion := "2.12.10"
 Compile / mainClass  := Some("com.example.RunSpark")
 assembly / mainClass  := Some("com.example.RunSpark")
-assembly / assemblyJarName := "Assignment1.jar"
+assembly / assemblyJarName := "PageRank.jar"
 
 val sparkVersion = "3.1.2"
 

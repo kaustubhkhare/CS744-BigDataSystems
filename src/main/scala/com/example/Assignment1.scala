@@ -32,7 +32,7 @@ object Assignment1 {
     val outputPath = config.getString("config.outputPath")
 
     val parametersSchema = Encoders.product[Parameters].schema
-    val df = spark.read.schema(parametersSchema).option("header", true).csv(inputPath)
+    val df = spark.read.schema(parametersSchema).option("header", false).csv(inputPath)
     df.persist
 
     df.createOrReplaceTempView("df")
