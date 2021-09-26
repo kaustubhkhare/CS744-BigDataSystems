@@ -21,8 +21,8 @@ object PageRank {
       .getOrCreate()
 
     val config: Config = ConfigFactory.parseResources("application.conf")
-    val inputPath = config.getString("config.inputPath")
-    val outputPath = config.getString("config.outputPath")
+    val inputPath = config.getString("config.pageRank.inputPath")
+    val outputPath = config.getString("config.pageRank.outputPath")
 
     log.info(s"Loaded config inputPath->$inputPath, outputPath->$outputPath")
 

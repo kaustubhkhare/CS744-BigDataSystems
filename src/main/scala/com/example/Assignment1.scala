@@ -28,11 +28,11 @@ object Assignment1 {
 
     val config : Config = ConfigFactory.parseResources("application.conf")
 
-    val inputPath = config.getString("config.inputPath")
-    val outputPath = config.getString("config.outputPath")
+    val inputPath = config.getString("config.task1.inputPath")
+    val outputPath = config.getString("config.task1.outputPath")
 
     val parametersSchema = Encoders.product[Parameters].schema
-    val df = spark.read.schema(parametersSchema).option("header", false).csv(inputPath)
+    val df = spark.read.schema(parametersSchema).option("header", true).csv(inputPath)
     df.persist
 
     df.createOrReplaceTempView("df")
