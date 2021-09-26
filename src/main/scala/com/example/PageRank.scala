@@ -3,11 +3,13 @@ package com.example
 import org.apache.log4j.{Level, LogManager}
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{Encoders, SaveMode, SparkSession}
+import org.apache.spark.storage.StorageLevel
 
 object PageRank {
 
   case class Links(fromNode: String,
                    toNode: String)
+
 
   def main(args: Array[String]): Unit = {
     val log = LogManager.getRootLogger()
@@ -31,18 +33,19 @@ object PageRank {
     var df = spark.read.schema(linkSchema).option("header", false).option("delimiter", "\t").csv(inputPath)
     df.createOrReplaceTempView("df") // Create a view to be used in spark.sql
     import spark.implicits._
-
     // Filtering out any null values
-    df = df.filter(r => {
-      r == null || r.getString(0) == null || r.getString(1) == null
+      df = df.filter(r => {
+          r == null || r.getString(0) == null || r.getString(1) == null
     }) // Trim any whitespaces before or after the values
-      .map(r => (r.getString(0).trim, r.getString(1).trim)).toDF("fromNode", "toNode")
+      .map(r => (r.getString(0).toLowerCase().trim, r.getString(1).toLowerCase().trim))
+      .filter(r => r._2.contains("category:") || !r._2.contains(":"))
+      .toDF("fromNode", "toNode")
 
     log.info("Creating links")
     // l is number of links going out of a fromLink
     val links = spark.sql("select A.fromNode, A.toNode, B.l from df A join " +
       "(select fromNode, count(fromNode) l from df group by fromNode) B on A.fromNode = B.fromNode")
-    links.persist() // Cache data to MEMORY and DISK
+    links.persist(StorageLevel.MEMORY_ONLY) // Cache data to MEMORY and DISK
     links.createOrReplaceTempView("links") // Create a view to be used in spark.sql
 
     // Create partitioning by fromNode and toNode columns
