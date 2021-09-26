@@ -51,7 +51,7 @@ object PageRank {
     var ranks2: DataFrame = null
     var tmp: DataFrame = null
 
-    val iterations = 2
+    val iterations = 10
     //  TODO: Create termination condition instead of loop
 
     log.info(s"Starting for loop")
