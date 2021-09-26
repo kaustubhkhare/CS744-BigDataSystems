@@ -1,9 +1,8 @@
 package com.example
 
-import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.spark.sql.{Encoders, SaveMode, SparkSession}
 
-object Assignment1 {
+object Task2 {
 
   case class Parameters(batteryLevel: Int,
                         c02Level: Int,
@@ -26,19 +25,24 @@ object Assignment1 {
       .appName("RunSpark Application")
       .getOrCreate()
 
-    val config : Config = ConfigFactory.parseResources("application.conf")
+    // Take paths from the user as command line arguments
+    val inputPath = args(0)
+    val outputPath = args(1)
 
-    val inputPath = config.getString("config.task1.inputPath")
-    val outputPath = config.getString("config.task1.outputPath")
-
+    // Create schema object to read the data
     val parametersSchema = Encoders.product[Parameters].schema
+
+    // Read csv data into the dataframe
     val df = spark.read.schema(parametersSchema).option("header", true).csv(inputPath)
-    df.persist
+    df.persist // Cache data to MEMORY and DISK
 
-    df.createOrReplaceTempView("df")
+    df.createOrReplaceTempView("df") // Create a view to be used in spark.sql
 
+    // Country code (3rd column) named as shortCountryCode and (last) column named as timestamp in the schema
     val sortedDf = spark.sql("SELECT * FROM df ORDER BY shortCountryCode, timestamp")
 
+    // Repartitoned with numPartitions = 1 to create a single output csv file
+    // Overwrite mode overwrites any older output which might have been present
     sortedDf.repartition(1).write.format("csv").mode(SaveMode.Overwrite).save(outputPath)
 
   }
