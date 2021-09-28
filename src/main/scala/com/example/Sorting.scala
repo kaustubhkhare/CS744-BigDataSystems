@@ -2,7 +2,7 @@ package com.example
 
 import org.apache.spark.sql.{Encoders, SaveMode, SparkSession}
 
-object Task2 {
+object Sorting {
 
   case class Parameters(batteryLevel: Int,
                         c02Level: Int,
