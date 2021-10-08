@@ -83,7 +83,7 @@ In order to run the PageRank application, we must first create the project jar a
 
 The different configurations we report are:
 #### No persistence and no partitioning
-(For this case, we remove all explicit persistence and partitioning code from our SparkPageRank.scala file and generate a pagerank_vanilla_2.12-0.1.jar jar)
+(For this case, we remove all explicit persistence and partitioning code from our SparkPageRank.scala file and generate a PageRank.jar jar)
 ```shell
 nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "false" "node" -1 &
 Example:
