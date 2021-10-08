@@ -48,12 +48,12 @@ on the master, once the application completes. This script would stop stats coll
 Finally, an example end to end invocation would look like this:
 
 ```shell
-rahul_@node0:~$ nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output/" "true" "node" 100 &
-rahul_@node0:~$ ./start_stats_collection.sh "persist_partition_100" 5
+kkhare@node0:~$ nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output/" "true" "node" 100 &
+kkhare@node0:~$ ./start_stats_collection.sh "persist_partition_100" 5
 
 ......application_completes......
 
-rahul_@node0:~$ ./stop_stats_collection.sh
+kkhare@node0:~$ ./stop_stats_collection.sh
 ```
 
 Now we look at the two main tasks of the assignment.
