@@ -1,6 +1,6 @@
 # CS744-Assignment1
 
-This [Github repository](https://github.com/i-am-rahul/CS744-Assignment1/tree/master) houses Spark applications for UW Madison CS 744 [Assignment 1](https://pages.cs.wisc.edu/~shivaram/cs744-fa21/assignment1.html). The language of choice is Scala and it was picked over Python or Java since Spark provides a nice interactive Scala shell for quick prototyping. The members of the group are:
+This [Github repository](https://github.com/kaustubhkhare/CS744-BigDataSystems-Assignment1/main/) houses Spark applications for UW Madison CS 744 [Assignment 1](https://pages.cs.wisc.edu/~shivaram/cs744-fa21/assignment1.html). The language of choice is Scala and it was picked over Python or Java since Spark provides a nice interactive Scala shell for quick prototyping. The members of the group are:
 | Member          | Email         | 
 | ----------------|:-------------:| 
 | Rahul Choudhary | rahul.choudhary@wisc.edu | 
@@ -22,7 +22,7 @@ In addition to the task themselves, we create a few utility scripts:
 ```
 
 ```shell
-example: ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output/" "true" "node" 100 
+example: ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output/" "true" "node" 100 
 ```
 
 2) **start_stats_collection.sh**: This script is used to collect system level statistics across all three cluster nodes. It internally spawns a shell script called collect_updated_stats.sh on each node which monitors memory usage, network, disk and CPU statistics. These statistics are written to a folder called  All you need to do is run **start_stats_collection.sh** only on the master after **run.sh** is used to start the Spark application. The parameters the script expects are as follows:
@@ -48,7 +48,7 @@ on the master, once the application completes. This script would stop stats coll
 Finally, an example end to end invocation would look like this:
 
 ```shell
-rahul_@node0:~$ nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output/" "true" "node" 100 &
+rahul_@node0:~$ nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output/" "true" "node" 100 &
 rahul_@node0:~$ ./start_stats_collection.sh "persist_partition_100" 5
 
 ......application_completes......
@@ -67,9 +67,9 @@ In order to run the Sorting application, we must first create the project jar an
 4. Submit the jar file and the app class name(org.rakab.Sorting) to run.sh along with the input and output file paths.
 5. Enjoy.
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_2.12-0.1.jar org.rakab.Sorting <inputHdfsPath> <outputHdfsPath> - - -1 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar org.rakab.Sorting <inputHdfsPath> <outputHdfsPath> - - -1 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.Sorting "hdfs://10.10.1.1:9000/data/task1/input/" "hdfs://10.10.1.1:9000/data/task1/output/" - - -1 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.Sorting "hdfs://10.10.1.1:9000/data/task1/input/" "hdfs://10.10.1.1:9000/data/task1/output/" - - -1 &
 ```
 
 ## PageRank (Part 3)
@@ -78,52 +78,52 @@ In order to run the PageRank application, we must first create the project jar a
 1. Clone this repository.
 2. Package it using [sbt](https://alvinalexander.com/scala/sbt-how-to-compile-run-package-scala-project/).
 3. Copy the jar file generated to your home directory.
-4. Submit the jar file and the app class name(org.rakab.SparkPageRank) to run.sh along with the input and output file paths and different application parameters (namely whether to persist or not, which column in the links list Dataframe to partition by, and how many numbers of partition needed).
+4. Submit the jar file and the app class name(com.example.PageRank) to run.sh along with the input and output file paths and different application parameters (namely whether to persist or not, which column in the links list Dataframe to partition by, and how many numbers of partition needed).
 5. Enjoy.
 
 The different configurations we report are:
 #### No persistence and no partitioning
 (For this case, we remove all explicit persistence and partitioning code from our SparkPageRank.scala file and generate a pagerank_vanilla_2.12-0.1.jar jar)
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_vanilla_2.12-0.1.jar org.rakab.SparkPageRank <inputHdfsPath> <outputHdfsPath> "false" "node" -1 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "false" "node" -1 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_vanilla_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "false" "node" -1 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "false" "node" -1 &
 ```
 
 #### No persistence but with partitioning on column 'node' of linksList dataframe
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_2.12-0.1.jar org.rakab.SparkPageRank <inputHdfsPath> <outputHdfsPath> "false" "node" -1 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "false" "node" -1 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "false" "node" -1 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "false" "node" -1 &
 ```
 
 #### No persistence but with partitioning of linksList dataframe into 200 partitions
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_2.12-0.1.jar org.rakab.SparkPageRank <inputHdfsPath> <outputHdfsPath> "false" "node" 200 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "false" "node" 200 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "false" "node" 200 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "false" "node" 200 &
 ```
 
 #### With persistence and partitioning of linksList dataframe into 100 partitions
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_2.12-0.1.jar org.rakab.SparkPageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 100 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 100 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 100 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 100 &
 ```
 
 #### With persistence and partitioning of linksList dataframe into 200 partitions
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_2.12-0.1.jar org.rakab.SparkPageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 200 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 200 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 200 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 200 &
 ```
 
 #### With persistence and partitioning of linksList dataframe into 200 partitions, and killing a worker at 25% progress of job
 On node 0:
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_2.12-0.1.jar org.rakab.SparkPageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 200 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 200 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 200 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 200 &
 ```
 
 On node 2 at 25% time elapsed: 
@@ -135,9 +135,9 @@ kill -9 <spark_worker_pid>
 #### With persistence and partitioning of linksList dataframe into 200 partitions, and killing a worker at 75% progress of job
 On node 0:
 ```shell
-nohup ./run.sh <clusterHeadNodeUrl> pagerank_2.12-0.1.jar org.rakab.SparkPageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 200 &
+nohup ./run.sh <clusterHeadNodeUrl> PageRank.jar com.example.PageRank <inputHdfsPath> <outputHdfsPath> "true" "node" 200 &
 Example:
-nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us pagerank_2.12-0.1.jar org.rakab.SparkPageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 200 &
+nohup ./run.sh c220g2-010607vm-1.wisc.cloudlab.us PageRank.jar com.example.PageRank "hdfs://10.10.1.1:9000/data/task2/enwiki-pages-articles/" "hdfs://10.10.1.1:9000/data/task2/output2/" "true" "node" 200 &
 ```
 
 On node 2 at 75% time elapsed: 
